@@ -141,122 +141,205 @@ export default function Home() {
         })
       }
 
-      // 🔥 섹션2 - 카드 스태거 애니메이션
+      // 🔥 섹션2 - 카드 스태거 애니메이션 (데스크탑 only)
       if (section2Ref.current) {
         const cards = section2Ref.current.querySelectorAll('.skill-card')
+        const mm = gsap.matchMedia()
 
-        gsap.fromTo(
-          section2Ref.current,
-          { opacity: 0, y: 80 },
-          {
-            opacity: 1,
-            y: 0,
-            scrollTrigger: {
-              trigger: section2Ref.current,
-              start: "top 70%",
-              end: "top 40%",
-              scrub: 1,
-            }
-          }
-        )
-
-        cards.forEach((card, index) => {
+        // 데스크탑 (768px 이상)만 애니메이션 적용
+        mm.add("(min-width: 768px)", () => {
           gsap.fromTo(
-            card,
-            { 
-              opacity: 0, 
-              y: 60,
-              scale: 0.9,
-              rotateY: -15
-            },
+            section2Ref.current,
+            { opacity: 0, y: 80 },
             {
               opacity: 1,
               y: 0,
-              scale: 1,
-              rotateY: 0,
               scrollTrigger: {
-                trigger: card,
-                start: "top 80%",
-                end: "top 50%",
-                scrub: 0.8,
+                trigger: section2Ref.current,
+                start: "top 70%",
+                end: "top 40%",
+                scrub: 1,
+              }
+            }
+          )
+
+          cards.forEach((card, index) => {
+            gsap.fromTo(
+              card,
+              { 
+                opacity: 0, 
+                y: 60,
+                scale: 0.9,
+                rotateY: -15
+              },
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                rotateY: 0,
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 80%",
+                  end: "top 50%",
+                  scrub: 0.8,
+                }
+              }
+            )
+          })
+
+          gsap.to(section2Ref.current, {
+            opacity: 0,
+            y: -50,
+            scrollTrigger: {
+              trigger: section2Ref.current,
+              start: "bottom 40%",
+              end: "bottom 10%",
+              scrub: 1,
+            }
+          })
+        })
+      }
+
+      // 🚀 MongoDB 스타일 핀 애니메이션 (데스크탑 only)
+      if (pinContainerRef.current && stickyHeroRef.current) {
+        // 반응형 체크
+        const mm = gsap.matchMedia()
+
+        // 데스크탑 (768px 이상)
+        mm.add("(min-width: 768px)", () => {
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: pinContainerRef.current,
+              start: "top top",
+              end: "+=3000",
+              scrub: 1,
+              pin: true,
+              anticipatePin: 1,
+            }
+          })
+
+          // 1단계: 히어로가 중앙에서 왼쪽으로 이동
+          tl.to(stickyHeroRef.current, {
+            x: "-35%",
+            scale: 0.85,
+            duration: 1,
+            ease: "power2.inOut"
+          })
+
+          // 2단계: 컨텐트4 등장
+          .fromTo(
+            content4Ref.current,
+            { 
+              opacity: 0, 
+              x: 100,
+              scale: 0.9 
+            },
+            { 
+              opacity: 1, 
+              x: 0,
+              scale: 1,
+              duration: 1,
+              ease: "power2.out"
+            },
+            "-=0.5"
+          )
+
+          // 3단계: 컨텐트4 페이드아웃, 컨텐트5 등장
+          .to(content4Ref.current, {
+            opacity: 0,
+            x: -50,
+            duration: 0.8
+          }, "+=0.5")
+          .fromTo(
+            content5Ref.current,
+            { 
+              opacity: 0, 
+              x: 100,
+              scale: 0.9
+            },
+            { 
+              opacity: 1, 
+              x: 0,
+              scale: 1,
+              duration: 1,
+              ease: "power2.out"
+            },
+            "-=0.5"
+          )
+        })
+
+        // 모바일 (768px 미만) - 세로 스크롤
+        mm.add("(max-width: 767px)", () => {
+          // 히어로는 가운데 고정
+          gsap.fromTo(
+            stickyHeroRef.current,
+            { opacity: 0, y: 50 },
+            {
+              opacity: 1,
+              y: 0,
+              scrollTrigger: {
+                trigger: pinContainerRef.current,
+                start: "top 70%",
+                end: "top 30%",
+                scrub: 1,
+              }
+            }
+          )
+
+          gsap.to(stickyHeroRef.current, {
+            opacity: 0,
+            y: -50,
+            scrollTrigger: {
+              trigger: pinContainerRef.current,
+              start: "bottom 60%",
+              end: "bottom 30%",
+              scrub: 1,
+            }
+          })
+
+          // 컨텐트4
+          gsap.fromTo(
+            content4Ref.current,
+            { opacity: 0, y: 80 },
+            {
+              opacity: 1,
+              y: 0,
+              scrollTrigger: {
+                trigger: content4Ref.current,
+                start: "top 70%",
+                end: "top 30%",
+                scrub: 1,
+              }
+            }
+          )
+
+          gsap.to(content4Ref.current, {
+            opacity: 0,
+            y: -50,
+            scrollTrigger: {
+              trigger: content4Ref.current,
+              start: "bottom 50%",
+              end: "bottom 20%",
+              scrub: 1,
+            }
+          })
+
+          // 컨텐트5
+          gsap.fromTo(
+            content5Ref.current,
+            { opacity: 0, y: 80 },
+            {
+              opacity: 1,
+              y: 0,
+              scrollTrigger: {
+                trigger: content5Ref.current,
+                start: "top 70%",
+                end: "top 30%",
+                scrub: 1,
               }
             }
           )
         })
-
-        gsap.to(section2Ref.current, {
-          opacity: 0,
-          y: -50,
-          scrollTrigger: {
-            trigger: section2Ref.current,
-            start: "bottom 40%",
-            end: "bottom 10%",
-            scrub: 1,
-          }
-        })
-      }
-
-      // 🚀 MongoDB 스타일 핀 애니메이션
-      if (pinContainerRef.current && stickyHeroRef.current) {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: pinContainerRef.current,
-            start: "top top",
-            end: "+=3000",
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-          }
-        })
-
-        // 1단계: 히어로가 중앙에서 왼쪽으로 이동
-        tl.to(stickyHeroRef.current, {
-          x: "-35%",
-          scale: 0.85,
-          duration: 1,
-          ease: "power2.inOut"
-        })
-
-        // 2단계: 컨텐트4 등장
-        .fromTo(
-          content4Ref.current,
-          { 
-            opacity: 0, 
-            x: 100,
-            scale: 0.9 
-          },
-          { 
-            opacity: 1, 
-            x: 0,
-            scale: 1,
-            duration: 1,
-            ease: "power2.out"
-          },
-          "-=0.5"
-        )
-
-        // 3단계: 컨텐트4 페이드아웃, 컨텐트5 등장
-        .to(content4Ref.current, {
-          opacity: 0,
-          x: -50,
-          duration: 0.8
-        }, "+=0.5")
-        .fromTo(
-          content5Ref.current,
-          { 
-            opacity: 0, 
-            x: 100,
-            scale: 0.9
-          },
-          { 
-            opacity: 1, 
-            x: 0,
-            scale: 1,
-            duration: 1,
-            ease: "power2.out"
-          },
-          "-=0.5"
-        )
       }
     })
 
@@ -376,10 +459,11 @@ export default function Home() {
       </section>
 
       {/* 🚀 컨텐트3 + MongoDB 스타일 핀 섹션 */}
-      <div ref={pinContainerRef} className="relative h-screen z-30">
-        <div className="absolute inset-0 flex items-center justify-center">
+      <div ref={pinContainerRef} className="relative md:h-screen">
+        {/* 데스크탑: absolute 레이아웃, 모바일: relative 세로 스택 */}
+        <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center">
           {/* 왼쪽으로 이동할 히어로 */}
-          <div ref={stickyHeroRef} className="w-full max-w-2xl px-6">
+          <div ref={stickyHeroRef} className="w-full max-w-2xl px-6 py-20 md:py-0">
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 p-1">
                 <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-6xl">
@@ -400,13 +484,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 오른쪽에서 등장할 컨텐트4 */}
-          <div ref={content4Ref} className="absolute right-0 w-1/2 h-full flex items-center justify-center px-12 opacity-0">
-            <div className="max-w-xl">
-              <h3 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-6">
+          {/* 오른쪽에서 등장할 컨텐트4 - 모바일: 세로 스택, 데스크탑: absolute */}
+          <div ref={content4Ref} className="w-full px-6 py-20 md:absolute md:right-0 md:w-1/2 md:h-full md:flex md:items-center md:justify-center md:px-12 md:opacity-0">
+            <div className="max-w-xl mx-auto md:mx-0">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-6">
                 Project 1
               </h3>
-              <p className="text-gray-300 text-lg leading-relaxed mb-8">
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-8">
                 혁신적인 UI/UX를 제공하는 웹 애플리케이션을 개발했습니다.
                 React와 TypeScript를 활용하여 확장 가능한 아키텍처를 구축했습니다.
               </p>
@@ -423,13 +507,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 오른쪽에서 등장할 컨텐트5 */}
-          <div ref={content5Ref} className="absolute right-0 w-1/2 h-full flex items-center justify-center px-12 opacity-0">
-            <div className="max-w-xl">
-              <h3 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-6">
+          {/* 오른쪽에서 등장할 컨텐트5 - 모바일: 세로 스택, 데스크탑: absolute */}
+          <div ref={content5Ref} className="w-full px-6 py-20 md:absolute md:right-0 md:w-1/2 md:h-full md:flex md:items-center md:justify-center md:px-12 md:opacity-0">
+            <div className="max-w-xl mx-auto md:mx-0">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-6">
                 Project 2
               </h3>
-              <p className="text-gray-300 text-lg leading-relaxed mb-8">
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-8">
                 실시간 데이터 시각화 대시보드를 구축했습니다.
                 Three.js와 D3.js를 활용하여 인터랙티브한 경험을 제공합니다.
               </p>
