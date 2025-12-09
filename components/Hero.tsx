@@ -1,0 +1,96 @@
+'use client'
+import { useRef, useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
+export default function Hero() {
+  const containerRef = useRef<HTMLElement>(null)
+  const nameRef = useRef<HTMLHeadingElement>(null)
+  
+  const [titleIndex, setTitleIndex] = useState(0)
+  const titles = [
+    { text: "Front-End Developer", gradient: "from-purple-400 via-pink-500 to-rose-500" },
+    { text: "Creative Coder", gradient: "from-cyan-400 via-blue-500 to-indigo-600" },
+    { text: "UI/UX Enthusiast", gradient: "from-emerald-400 via-teal-500 to-cyan-600" }
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTitleIndex((prev) => (prev + 1) % titles.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const chars = nameRef.current?.querySelectorAll('.char')
+      if (chars) {
+        gsap.fromTo(chars, 
+          { opacity: 0, y: 100, rotateX: -90 },
+          { opacity: 1, y: 0, rotateX: 0, duration: 0.8, stagger: 0.05, ease: "back.out(1.7)" }
+        )
+      }
+      gsap.to(containerRef.current, {
+        opacity: 0,
+        y: -100,
+        scale: 0.95,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        }
+      })
+    }, containerRef)
+    return () => ctx.revert()
+  }, [])
+
+  const name = "I'm Hyeonsang Kim"
+
+  return (
+    <section ref={containerRef} className="relative h-screen flex flex-col items-center justify-center z-10 px-4">
+      {/* ✅ 수정 포인트: 
+         1. pb-4 sm:pb-6: 글자 꼬리(y, g)가 잘리지 않도록 하단 패딩 확보
+         2. leading-tight: 줄 간격을 살짝 조여서 벙벙한 느낌 제거
+         3. py-2: 상하 여백 추가 확보
+      */}
+      <div className="relative overflow-visible py-2">
+        <h1 ref={nameRef} className="text-4xl sm:text-7xl font-bold perspective-text text-center pb-4 sm:pb-6 leading-tight">
+          {name.split('').map((char, i) => (
+            <span key={i} className="char inline-block bg-gradient-to-r from-white via-purple-100 to-gray-400 bg-clip-text text-transparent">
+              {char === ' ' ? '\u00A0' : char}
+            </span>
+          ))}
+        </h1>
+      </div>
+
+      <div className="w-full flex items-center justify-center relative min-h-[40px] sm:min-h-[60px] overflow-visible">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={titleIndex}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.5, ease: "circOut" }}
+            // ✅ 여기도 pb-2 추가하여 텍스트 잘림 방지
+            className={`text-xl sm:text-4xl font-light tracking-wide bg-gradient-to-r ${titles[titleIndex].gradient} bg-clip-text text-transparent text-center px-4 pb-2`}
+          >
+            {titles[titleIndex].text}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+      
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ delay: 2, duration: 1 }}
+        className="absolute bottom-10 animate-bounce"
+      >
+        <span className="text-gray-500 text-xs sm:text-sm">Scroll Down</span>
+      </motion.div>
+    </section>
+  )
+}
