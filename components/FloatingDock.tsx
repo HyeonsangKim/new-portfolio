@@ -1,6 +1,6 @@
 'use client'
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
-import { useRef, useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from 'react'
 import { FiHome, FiCpu, FiBriefcase, FiLayers, FiMail } from 'react-icons/fi'
 
 const links = [
@@ -12,14 +12,10 @@ const links = [
 ]
 
 export default function FloatingDock() {
-  const mouseY = useMotionValue(Infinity)
   const [activeId, setActiveId] = useState('home')
 
-  // ✅ Scroll Spy: 현재 보고 있는 섹션 감지
+  // ✅ Scroll Spy (그대로 유지)
   useEffect(() => {
-    // ✅ 수정된 옵션: 'threshold' 대신 'rootMargin' 사용
-    // 화면의 상하 45%를 무시하고, 정중앙 10% 영역(Center Line)에 들어온 요소만 감지합니다.
-    // 이렇게 하면 섹션이 아무리 길어도, 짧아도, 화면 가운데에 있으면 무조건 활성화됩니다.
     const observerOptions = {
       root: null,
       rootMargin: '-45% 0px -45% 0px', 
@@ -34,7 +30,6 @@ export default function FloatingDock() {
       })
     }, observerOptions)
 
-    // ... (이하 코드는 동일)
     links.forEach((link) => {
       const element = document.getElementById(link.id)
       if (element) observer.observe(element)
@@ -44,18 +39,13 @@ export default function FloatingDock() {
   }, [])
 
   return (
-    // ✅ 버그 수정 1: z-[999]로 최상단 보장
-    // ✅ 버그 수정 2: pointer-events-none으로 컨테이너가 클릭 방해하지 않도록 설정
     <div 
       className="fixed right-6 top-1/2 -translate-y-1/2 z-[999] flex flex-col gap-5 items-center pointer-events-none"
-      onMouseMove={(e) => mouseY.set(e.pageY)}
-      onMouseLeave={() => mouseY.set(Infinity)}
     >
       {links.map((link) => (
         <DockIcon 
           key={link.id} 
-          mouseY={mouseY} 
-          isActive={activeId === link.id} // 활성화 상태 전달
+          isActive={activeId === link.id} 
           {...link} 
         />
       ))}
@@ -63,22 +53,7 @@ export default function FloatingDock() {
   )
 }
 
-function DockIcon({ mouseY, id, icon, label, isActive }: { mouseY: any, id: string, icon: any, label: string, isActive: boolean }) {
-  const ref = useRef<HTMLDivElement>(null)
-
-  const distance = useTransform(mouseY, (val: number) => {
-    const bounds = ref.current?.getBoundingClientRect() ?? { y: 0, height: 0 }
-    return val - bounds.y - bounds.height / 2
-  })
-
-  // 인터랙션 매핑
-  const sizeSync = useTransform(distance, [-150, 0, 150], [40, 65, 40])
-  const size = useSpring(sizeSync, { mass: 0.1, stiffness: 150, damping: 12 })
-  
-  // 아이콘 크기
-  const iconScaleSync = useTransform(distance, [-150, 0, 150], [1, 1.3, 1])
-  const iconScale = useSpring(iconScaleSync, { mass: 0.1, stiffness: 150, damping: 12 })
-
+function DockIcon({ id, icon, label, isActive }: { id: string, icon: any, label: string, isActive: boolean }) {
   const scrollToSection = () => {
     const element = document.getElementById(id)
     if (element) {
@@ -89,27 +64,28 @@ function DockIcon({ mouseY, id, icon, label, isActive }: { mouseY: any, id: stri
   }
 
   return (
-    <div className="relative flex items-center justify-center pointer-events-auto"> {/* 개별 아이콘은 pointer-events-auto */}
+    <div className="relative flex items-center justify-center pointer-events-auto">
       <motion.div
-        ref={ref}
-        style={{ width: size, height: size }}
         onClick={scrollToSection}
-        // ✅ 애니메이션: 활성화 시 테두리 색상과 그림자 변경
+        // ✅ 물리 효과 제거 후 고정 크기(w-12 h-12 = 48px) 적용
+        className={`w-6 h-6 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center text-white cursor-pointer relative group backdrop-blur-md transition-all duration-300`}
+        
+        // ✅ 활성화 상태 애니메이션 (배경, 테두리, 그림자만 부드럽게 변경)
         animate={{
-          borderColor: isActive ? "rgba(168, 85, 247, 0.8)" : "rgba(255, 255, 255, 0.1)", // 보라색 vs 투명
+          borderColor: isActive ? "rgba(168, 85, 247, 0.8)" : "rgba(255, 255, 255, 0.1)", 
           backgroundColor: isActive ? "rgba(0, 0, 0, 0.6)" : "rgba(0, 0, 0, 0.3)",
           boxShadow: isActive 
-            ? "0 0 15px rgba(168, 85, 247, 0.4)" // 활성화 시 글로우 효과
-            : "0 0 0px rgba(0,0,0,0)"
+            ? "0 0 15px rgba(168, 85, 247, 0.4)"
+            : "0 0 0px rgba(0,0,0,0)",
+          scale: isActive ? 1.1 : 1 // 활성화된 것만 살짝 1.1배 강조 (선택 사항)
         }}
+        // 기본 마우스 호버 시 살짝 밝아지는 효과 정도는 남겨둠 (UX상 클릭 가능함을 알리기 위해)
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
-        className={`
-          rounded-full border flex items-center justify-center text-white cursor-pointer relative group backdrop-blur-md transition-colors
-        `}
       >
-        <motion.span style={{ scale: iconScale }} className="relative z-10">
+        <span className="text-sm sm:text-xl relative z-10">
           {icon}
-        </motion.span>
+        </span>
         
         {/* Tooltip (왼쪽) */}
         <span className="absolute right-full mr-4 bg-black/80 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">
@@ -117,8 +93,7 @@ function DockIcon({ mouseY, id, icon, label, isActive }: { mouseY: any, id: stri
         </span>
       </motion.div>
 
-      {/* ✅ 트렌디한 효과: 활성화 표시 점 (Active Indicator) */}
-      {/* 아이콘 우측에 작은 점을 띄워 현재 위치를 세련되게 표시 */}
+      {/* ✅ 활성화 표시 점 (Active Indicator) */}
       <AnimatePresence>
         {isActive && (
           <motion.div
