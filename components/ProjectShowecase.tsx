@@ -11,12 +11,12 @@ const experiences = [
   {
     id: 1,
     company: "Soundmind",
-    role: "Full Stack & Mobile Lead",
+    role: "Frontend & Backend",
     period: "2025.02 - Present",
     // 탭으로 보여줄 프로젝트 목록
     projects: [
       {
-        name: "ODYA (Location)",
+        name: "ODIYA (Location)",
         desc: "제한된 네트워크 환경에서 IPC 통신과 Redis를 활용한 고가용성 위치 추적 시스템입니다.",
         highlights: ["Android Native Module & IPC 통신", "Redis 기반 실시간 위치 데이터 파이프라인", "React Native CLI 크로스 플랫폼 배포"],
         stack: ['React Native', 'Spring Boot', 'Redis', 'Native Modules']
@@ -32,7 +32,13 @@ const experiences = [
         desc: "Next.js 15의 Server Actions와 SSR을 도입하여 보안과 성능을 강화한 교육 평가 플랫폼입니다.",
         highlights: ["Next.js 15 SSR 아키텍처", "Prisma & PostgreSQL 스키마 설계", "Server Actions 기반 파일 처리"],
         stack: ['Next.js 15', 'TypeScript', 'Prisma', 'PostgreSQL']
-      }
+      },
+      {
+        name: "Other",
+        desc: "Next.js 15의 Server Actions와 SSR을 도입하여 보안과 성능을 강화한 교육 평가 플랫폼입니다.",
+        highlights: ["Next.js 15 SSR 아키텍처", "Prisma & PostgreSQL 스키마 설계", "Server Actions 기반 파일 처리"],
+        stack: ['Next.js 15', 'TypeScript', 'Prisma', 'PostgreSQL']
+      },
     ],
     color: "from-blue-500 to-cyan-400"
   },
@@ -45,8 +51,8 @@ const experiences = [
     projects: [
       {
         name: "LMS App Migration",
-        desc: "5,000여 개의 웹 콘텐츠를 React Native로 이관하고, GSAP/SVG로 인터랙티브 학습 경험을 구현했습니다.",
-        highlights: ["Web → React Native 앱 마이그레이션", "SVG Path 활용 인터랙티브 학습 구현", "렌더링 성능 300% 최적화"],
+        desc: "5,000여 개의 웹 콘텐츠를 제작하고, React Native로 마이그레이션 하고, GSAP/SVG로 인터랙티브한 경험을 구현했습니다.",
+        highlights: ["5000개가 넘는 유아용 영아 학습 컨턴츠 웹 제작","Web → React Native 앱 마이그레이션", "SVG Path 활용 인터랙티브 학습 구현"],
         stack: ['React Native', 'React', 'GSAP', 'TypeScript']
       }
     ],
@@ -55,13 +61,13 @@ const experiences = [
   {
     id: 3,
     company: "IEZLAB",
-    role: "Full Stack Developer",
+    role: "Backend Developer",
     period: "2022.04 - 2023.03",
     projects: [
       {
         name: "R&D Visualization",
-        desc: "Canvas API를 활용해 고서 번역 이미지 위에 텍스트 레이어를 렌더링하는 시각화 엔진을 개발했습니다.",
-        highlights: ["Canvas API 기반 이미지 렌더링 엔진", "Spring Boot/JPA 사내 ERP 구축", "레거시 데이터 시각화"],
+        desc: "자바 스프링과 Jquery, Thyme-leaf등을 활용해 웹을 제작 하였습니다.",
+        highlights: ["Jquery, Spring을 활용한 와인 이커머스 제작", "Spring Boot/JPA 사내 ERP 구축", "레거시 데이터 시각화"],
         stack: ['React', 'Canvas API', 'Spring Boot', 'JPA']
       }
     ],
@@ -124,7 +130,9 @@ export default function ProjectShowcase() {
     <section ref={containerRef} className="relative h-screen bg-slate-950 text-white overflow-hidden selection:bg-white/20">
       
       {/* Background Glow */}
-      <div className="absolute inset-0 pointer-events-none transition-opacity duration-1000">
+      <div className="absolute inset-0 pointer-events-none transition-colors duration-1000 ease-in-out">
+         {/* 베이스 그라디언트: 전체 화면을 덮는 은은한 색상 (Opacity 20%) */}
+         <div className={`absolute inset-0 bg-gradient-to-br ${experiences[activeCardIndex].color} opacity-10 transition-all duration-1000`} />
          <div className={`absolute top-[-20%] right-[-10%] w-[80%] h-[80%] bg-gradient-to-b ${experiences[activeCardIndex].color} opacity-15 blur-[150px] transition-colors duration-1000`} />
       </div>
 

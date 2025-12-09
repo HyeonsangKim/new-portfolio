@@ -13,8 +13,8 @@ export default function Hero() {
   const [titleIndex, setTitleIndex] = useState(0)
   const titles = [
     { text: "Front-End Developer", gradient: "from-purple-400 via-pink-500 to-rose-500" },
-    { text: "Creative Coder", gradient: "from-cyan-400 via-blue-500 to-indigo-600" },
-    { text: "UI/UX Enthusiast", gradient: "from-emerald-400 via-teal-500 to-cyan-600" }
+    { text: "App Developer", gradient: "from-cyan-400 via-blue-500 to-indigo-600" },
+    { text: "Web Developer", gradient: "from-emerald-400 via-teal-500 to-cyan-600" }
   ]
 
   useEffect(() => {
