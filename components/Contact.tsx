@@ -44,10 +44,10 @@ export default function Contact() {
         >
           <div>
             <h2 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-purple-200 to-gray-400 bg-clip-text text-transparent mb-6">
-              Let's Start a <br /> Conversation.
+              Let&apos;s Start a <br /> Conversation.
             </h2>
             <p className="text-gray-400 text-lg leading-relaxed">
-              새로운 프로젝트 논의나 기술적인 커피챗은 언제나 환영입니다.<br />
+              새로운 프로젝트 논의나 커피챗은 언제나 환영입니다.<br />
             </p>
           </div>
 

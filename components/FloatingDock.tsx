@@ -53,6 +53,7 @@ export default function FloatingDock() {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function DockIcon({ id, icon, label, isActive }: { id: string, icon: any, label: string, isActive: boolean }) {
   const scrollToSection = () => {
     const element = document.getElementById(id)

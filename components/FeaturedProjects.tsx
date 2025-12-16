@@ -7,20 +7,20 @@ import Image from 'next/image'
 const projects = [
   {
     id: 1,
-    title: "Test",
+    title: "SquardRoom",
     category: "Personal Project",
-    desc: "TestTestTestTestTestTestTestTestTest",
-    tech: ["Next.js", "Python", "FastAPI", "OpenAI"],
+    desc: "준비 중 입니다.",
+    tech: ["React-native", "Supabase"],
     links: { demo: "#", github: "#" },
     image: null, // 이미지 경로가 있으면 넣으세요
     color: "from-violet-600 to-indigo-600"
   },
   {
     id: 2,
-    title: "Test",
+    title: "준비 중 입니다.",
     category: "Mobile App",
-    desc: "TestTestTestTestTestTest",
-    tech: ["React Native", "WebSocket", "Zustand"],
+    desc: "준비 중 입니다.",
+    tech: ["준비 중 입니다."],
     links: { demo: null, github: "#" },
     image: null,
     color: "from-emerald-500 to-teal-500"
@@ -38,7 +38,7 @@ export default function FeaturedProjects() {
         >
           Selected Works
         </motion.h2>
-        <p className="text-gray-400">엄선된 개인 프로젝트와 실험들입니다.</p>
+        <p className="text-gray-400">개인 프로젝트 입니다.</p>
       </div>
 
       <div className="flex flex-col gap-20 lg:gap-32">
@@ -50,6 +50,7 @@ export default function FeaturedProjects() {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function CinematicCard({ project, index }: { project: any, index: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({

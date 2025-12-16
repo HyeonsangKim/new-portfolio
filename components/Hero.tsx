@@ -12,7 +12,7 @@ export default function Hero() {
   
   const [titleIndex, setTitleIndex] = useState(0)
   const titles = [
-    { text: "Front-End Developer", gradient: "from-purple-400 via-pink-500 to-rose-500" },
+    { text: "Frontend Developer", gradient: "from-purple-400 via-pink-500 to-rose-500" },
     { text: "App Developer", gradient: "from-cyan-400 via-blue-500 to-indigo-600" },
     { text: "Web Developer", gradient: "from-emerald-400 via-teal-500 to-cyan-600" }
   ]
@@ -52,11 +52,6 @@ export default function Hero() {
 
   return (
     <section ref={containerRef} className="relative h-screen flex flex-col items-center justify-center z-10 px-4">
-      {/* ✅ 수정 포인트: 
-         1. pb-4 sm:pb-6: 글자 꼬리(y, g)가 잘리지 않도록 하단 패딩 확보
-         2. leading-tight: 줄 간격을 살짝 조여서 벙벙한 느낌 제거
-         3. py-2: 상하 여백 추가 확보
-      */}
       <div className="relative overflow-visible py-2">
         <h1 ref={nameRef} className="text-4xl sm:text-7xl font-bold perspective-text text-center pb-4 sm:pb-6 leading-tight">
           {name.split('').map((char, i) => (
