@@ -204,7 +204,8 @@ export default function Orb({
 
     function resize() {
       if (!container) return;
-      const dpr = window.devicePixelRatio || 1;
+      // DPR 1.5로 제한 — 레티나에서 GPU 부하 절반 이하로 감소
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const width = container.clientWidth;
       const height = container.clientHeight;
       renderer.setSize(width * dpr, height * dpr);
@@ -247,8 +248,13 @@ export default function Orb({
     container.addEventListener('mouseleave', handleMouseLeave);
 
     let rafId: number;
+    // 30fps throttle — 시각적 차이 거의 없이 GPU 부하 50% 감소
+    const frameDuration = 1000 / 30;
+    let lastFrame = 0;
     const update = (t: number) => {
       rafId = requestAnimationFrame(update);
+      if (t - lastFrame < frameDuration) return;
+      lastFrame = t;
       const dt = (t - lastTime) * 0.001;
       lastTime = t;
       program.uniforms.iTime.value = t * 0.001;

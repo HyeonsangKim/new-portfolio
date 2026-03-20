@@ -1,126 +1,50 @@
 'use client'
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { FiGithub, FiExternalLink, FiArrowRight } from 'react-icons/fi'
-import Image from 'next/image'
 
-const projects = [
-  {
-    id: 1,
-    title: "SquardRoom",
-    category: "Personal Project",
-    desc: "준비 중 입니다.",
-    tech: ["React-native", "Supabase"],
-    links: { demo: "#", github: "#" },
-    image: null, // 이미지 경로가 있으면 넣으세요
-    color: "from-violet-600 to-indigo-600"
-  },
-  {
-    id: 2,
-    title: "준비 중 입니다.",
-    category: "Mobile App",
-    desc: "준비 중 입니다.",
-    tech: ["준비 중 입니다."],
-    links: { demo: null, github: "#" },
-    image: null,
-    color: "from-emerald-500 to-teal-500"
-  }
-]
+import { useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
+import { projects } from '@/data/projects'
+import ProjectRow from './projects/ProjectRow'
 
 export default function FeaturedProjects() {
+  const [openId, setOpenId] = useState<string | null>(null)
+
+  const handleToggle = useCallback((id: string) => {
+    setOpenId((prev) => (prev === id ? null : id))
+  }, [])
+
   return (
     <section id="projects" className="relative py-32 px-6 max-w-7xl mx-auto z-10">
-      <div className="mb-24 text-center">
-        <motion.h2 
+      <div className="mb-16 text-center">
+        <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-500 bg-clip-text text-transparent mb-4"
         >
           Selected Works
         </motion.h2>
-        <p className="text-gray-400">개인 프로젝트 입니다.</p>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="text-gray-400"
+        >
+          WIGTN 팀에서 만든 프로젝트들입니다.
+        </motion.p>
       </div>
 
-      <div className="flex flex-col gap-20 lg:gap-32">
+      <div className="border-t border-white/10">
         {projects.map((project, i) => (
-          <CinematicCard key={project.id} project={project} index={i} />
+          <ProjectRow
+            key={project.id}
+            project={project}
+            index={i}
+            isOpen={openId === project.id}
+            onToggle={() => handleToggle(project.id)}
+          />
         ))}
       </div>
     </section>
-  )
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CinematicCard({ project, index }: { project: any, index: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  })
-  
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]) // Parallax Effect
-  const isEven = index % 2 === 0
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8 }}
-      className={`flex flex-col lg:flex-row gap-8 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
-    >
-      {/* 1. Image Area (Wide & Parallax) */}
-      <div className="w-full lg:w-3/5 h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden relative group border border-white/10 shadow-2xl">
-        <div className="absolute inset-0 bg-black/20 z-10 group-hover:bg-transparent transition-colors duration-500" />
-        
-        {/* 이미지가 없을 때 대체 그라디언트 */}
-        {project.image ? (
-            <motion.div style={{ y }} className="relative w-full h-[120%] -top-[10%]">
-                 <Image src={project.image} alt={project.title} fill className="object-cover" />
-            </motion.div>
-        ) : (
-             <div className={`w-full h-full bg-gradient-to-br ${project.color} opacity-20`} />
-        )}
-        
-        {/* Floating Badge */}
-        <div className="absolute top-6 left-6 z-20 px-4 py-2 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-xs font-bold text-white uppercase tracking-wider">
-           {project.category}
-        </div>
-      </div>
-
-      {/* 2. Text Area */}
-      <div className="w-full lg:w-2/5 flex flex-col items-start space-y-6">
-        <h3 className="text-3xl md:text-5xl font-bold text-white leading-tight">
-          {project.title}
-        </h3>
-        <p className="text-gray-400 text-lg leading-relaxed">
-          {project.desc}
-        </p>
-
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2">
-          {project.tech.map((t: string) => (
-             <span key={t} className="px-3 py-1 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/5">
-               {t}
-             </span>
-          ))}
-        </div>
-
-        {/* Links */}
-        <div className="flex gap-4 pt-4">
-           {project.links.github && (
-              <a href={project.links.github} className="flex items-center gap-2 text-white border-b border-transparent hover:border-purple-500 transition-all pb-1 group">
-                 <FiGithub /> Source Code <FiArrowRight className="group-hover:translate-x-1 transition-transform"/>
-              </a>
-           )}
-           {project.links.demo && (
-              <a href={project.links.demo} className="flex items-center gap-2 text-white border-b border-transparent hover:border-purple-500 transition-all pb-1 group">
-                 <FiExternalLink /> Live Demo <FiArrowRight className="group-hover:translate-x-1 transition-transform"/>
-              </a>
-           )}
-        </div>
-      </div>
-    </motion.div>
   )
 }
